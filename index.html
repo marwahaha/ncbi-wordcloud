@@ -64,17 +64,17 @@
                 }).then(ids => fetch("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&retmax=200&id=" + ids))
                 .then(r => r.text())
                 .then(t => {
-                    lines = t.split('\n');
+                    lines = t.split('>');
                     summaries = "";
                     start = false;
                     for (idx = 0; idx < lines.length; idx++) {
-                        if (lines[idx].indexOf("    abstract ") !== -1) {
+                        if (lines[idx] == "<Abstract") {
                             start = true;
-                        } else if (lines[idx].indexOf("    ") !== -1) {
+                        } else if (lines[idx] == "</Abstract") {
                             start = false;
                         }
                         if (start) {
-                            cleaned = lines[idx].replace("    abstract ", "");
+                            cleaned = lines[idx].replace(/Abstract.*/, "");
                             summaries += cleaned + " ";
                         }
                     }
